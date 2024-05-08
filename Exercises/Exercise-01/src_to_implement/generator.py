@@ -133,7 +133,8 @@ class ImageGenerator:
         images, labels = list(), list()
 
         for index in current_batch_indexs:
-            image = self.augment(Image(np.load(f"{self.file_path}/{index}.npy")))
+            image_file_path = f"{self.file_path}/{index}.npy"
+            image = self.augment(Image(np.load(image_file_path)))
             label = self.image_index_to_label[str(index)]
 
             images.append(image)
@@ -179,11 +180,11 @@ class ImageGenerator:
         if self.batch_size % 3 != 0:
             rows += 1
         
-        fig  = plt.figure(figsize = (10,10))
+        fig  = plt.figure(figsize = (10, 10))
         
         for i, (image, label) in enumerate(zip(images, labels)):
             fig.add_subplot(rows, columns, i + 1)
-            plt.imshow(image.astype('uint8'))
+            plt.imshow(image)
             plt.xticks([])
             plt.yticks([])
             plt.title(self.class_name(label))
