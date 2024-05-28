@@ -8,8 +8,8 @@ class FullyConnected(BaseLayer):
         self.trainable  = True
         self.weights    = np.random.uniform(0, 1, (input_size + 1, output_size)) # [5 x 3]
         
-        self._optimizer: BaseOptimizer  = None
-        self.delta_w          = None
+        self.optimizer: BaseOptimizer   = None
+        self.delta_w                    = None
 
     def forward(self, input_tensor):
         initial_bias = np.ones((input_tensor.shape[0], 1))
@@ -28,8 +28,8 @@ class FullyConnected(BaseLayer):
         # a^(L-1) == self.input_tensor && activation_fn(z^L) * 2(a^L - y) == error_tensor
         self.delta_w = np.dot(self.input_tensor.T, error_tensor) # [5 x 3] 
 
-        if self._optimizer:
-            self.weights = self._optimizer.calculate_update(
+        if self.optimizer:
+            self.weights = self.optimizer.calculate_update(
                 weight_tensor   = self.weights, 
                 gradient_tensor = self.delta_w
             ) # [5 x 3]
@@ -38,12 +38,13 @@ class FullyConnected(BaseLayer):
 
     @property
     def optimizer(self):
-        return self._optimizer
+        return self.optimizer
     
     @optimizer.setter
     def optimizer(self, optimizer):
-        self._optimizer = optimizer
+        self.optimizer = optimizer
     
     @property
     def gradient_weights(self):
         return self.delta_w
+
