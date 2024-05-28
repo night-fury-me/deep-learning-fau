@@ -45,8 +45,8 @@ class Circle:
         self.output = None
 
     def draw(self):
-        lin_space_X = np.linspace(0, self.resolution - 1, self.resolution)
-        lin_space_Y = np.linspace(0, self.resolution - 1, self.resolution)
+        lin_space_X = np.linspace(0, self.resolution, self.resolution)
+        lin_space_Y = np.linspace(0, self.resolution, self.resolution)
 
         X_cords, Y_cords = np.meshgrid(lin_space_X, lin_space_Y)
         distance_wrt_center = np.sqrt((X_cords - self.center_X)**2 + (Y_cords - self.center_Y)**2)
