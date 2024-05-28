@@ -1,14 +1,15 @@
 import numpy as np # type: ignore
 from Layers.Base import BaseLayer
-from Optimization import Optimizers
+from Optimization.Optimizers import BaseOptimizer
 
 class FullyConnected(BaseLayer):
     def __init__(self, input_size, output_size) -> None:
         super().__init__()
-        self.trainable = True
-        self.weights = np.random.uniform(0, 1, (input_size + 1, output_size)) # [5 x 3]
-        self._optimizer: Optimizers.BaseOptimizer = None
-        self._gradient_weights = None
+        self.trainable  = True
+        self.weights    = np.random.uniform(0, 1, (input_size + 1, output_size)) # [5 x 3]
+        
+        self._optimizer: BaseOptimizer  = None
+        self._gradient_weights          = None
 
     def forward(self, input_tensor):
         initial_bias = np.ones((input_tensor.shape[0], 1))

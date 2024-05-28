@@ -1,23 +1,31 @@
 import numpy as np # type: ignore
 import copy
+from Optimization.Loss import BaseLoss
+from Optimization.Optimizers import BaseOptimizer
 
 class NeuralNetwork:
     def __init__(self, optimizer) -> None:
-        self.optimizer = optimizer
         self.data_layer = None
-        self.loss_layer = None
+        self.optimizer  : BaseOptimizer = optimizer
+        self.loss_layer : BaseLoss      = None
         self.layers = list()
-        self.loss = list()
+        self.loss   = list()
 
     def forward(self):
         x, self.y = copy.deepcopy(self.data_layer.next())
+        
         for layer in self.layers:
             x = layer.forward(x)
-        return self.loss_layer.forward(x, copy.deepcopy(self.y))
+        
+        return self.loss_layer.forward(
+            predicted_label = x, 
+            true_label      = copy.deepcopy(self.y)
+        )
     
     def backward(self):
-        y = copy.deepcopy(self.y)
-        y = self.loss_layer.backward(y)
+        y = self.loss_layer.backward(
+            true_label = copy.deepcopy(self.y)
+        )
         for layer in reversed(self.layers):
             y = layer.backward(y)
         
@@ -28,8 +36,8 @@ class NeuralNetwork:
 
     def train(self, iterations):
         for epoch in range(iterations):
-            loss = self.forward()
-            self.loss.append(loss)
+            current_loss = self.forward()
+            self.loss.append(current_loss)
             self.backward()
     
     def test(self, input_tensor):
