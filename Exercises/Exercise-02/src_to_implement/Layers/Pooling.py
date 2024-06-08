@@ -37,9 +37,6 @@ class Pooling(BaseLayer):
 
         return output
 
-
-
-
     def backward(self, error_tensor):
         *_, H_in, W_in = error_tensor.shape
 

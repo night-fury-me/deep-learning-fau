@@ -2,14 +2,9 @@ import numpy as np #type: ignore
 from Layers.Base import InitializableLayer
 from Optimization.Optimizers import BaseOptimizer
 from Layers.Initializers import BaseInitializer
-from enum import Enum
 from typing import Dict
 from scipy import signal #type: ignore
 from copy import deepcopy
-
-class OptimizerFor(Enum):
-    WEIGHTS = 1
-    BIAS   = 2
 
 class Conv(InitializableLayer):
     def __init__(self, stride_shape, convolution_shape, num_kernels) -> None:
@@ -159,4 +154,3 @@ class Conv(InitializableLayer):
         self._optimizer = optimizer
         self._optimizer.weights = deepcopy(optimizer)
         self._optimizer.bias = deepcopy(optimizer)
-
