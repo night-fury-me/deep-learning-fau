@@ -15,11 +15,11 @@ def build():
     # LetNet-5 Architecture: (On MNIST)
     #   >> [batch_size x 1  x 28 x 28] | MNIST Input
     
-    #   >> [batch_size x 6  x 28 x 28] | Convolution with stride = 1, kernel = [1 x 5 x 5]
+    #   >> [batch_size x 6  x 28 x 28] | Convolution with stride = 1, kernel = [1 x 5 x 5], number of kernel = 6
     #   >> [batch_size x 6  x 28 x 28] | ReLU Activation
     #   >> [batch_size x 6  x 14 x 14] | Max-Pooling with stride = 2, kernel = [2 x 2]
 
-    #   >> [batch_size x 16 x 14 x 14] | Convolution with stride = 1, kernel = [1 x 5 x 5]
+    #   >> [batch_size x 16 x 14 x 14] | Convolution with stride = 1, kernel = [1 x 5 x 5], number of kernel = 16
     #   >> [batch_size x 16 x 14 x 14] | ReLU Activation
     #   >> [batch_size x 16 x 7  x 7 ] | Max-Pooling with stride = 2, kernel = [2 x 2]
     

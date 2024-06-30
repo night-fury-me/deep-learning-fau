@@ -35,9 +35,9 @@ class RNN(InitializableWithPhaseSeperationLayer):
         self.yts = np.empty((self.batch_size, self.output_size))
 
         self.xt_tilda_activation_store = list()
-        self.yt_activation_store = list()
-        self.tanh_activation_store    = list()
-        self.sigmoid_activation_store = list()
+        self.yt_activation_store       = list()
+        self.tanh_activation_store     = list()
+        self.sigmoid_activation_store  = list()
 
         if self.memorize == False:
             self.previous_ht = np.zeros(self.hidden_size)
