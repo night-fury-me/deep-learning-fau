@@ -19,8 +19,8 @@ class RNN(InitializableWithPhaseSeperationLayer):
         self.fc_xt = FullyConnected(hidden_size + input_size, hidden_size)
         self.fc_yt = FullyConnected(hidden_size, output_size)
 
-        self.previous_ht      = np.zeros(self.hidden_size)
-        self.weights = self.fc_xt.weights
+        self.previous_ht = np.zeros(self.hidden_size)
+        self.weights     = self.fc_xt.weights
         
         self.tanh_layer    = TanH()
         self.sigmoid_layer = Sigmoid()        
