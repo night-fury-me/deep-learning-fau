@@ -5,6 +5,11 @@ from Layers.FullyConnected import FullyConnected
 from Layers.TanH import TanH
 from Layers.Sigmoid import Sigmoid
 
+XT_TILDA_ACTIVATION = 'XT_TILDA_ACTIVATION'
+YT_ACTIVATION = 'YT_ACTIVATION'
+TANH_ACTIVATION = 'TANH_ACTIVATION'
+SIGMOID_ACTIVATION = 'SIGMOID_ACTIVATION'
+
 class RNN(InitializableWithPhaseSeperationLayer):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
@@ -27,17 +32,19 @@ class RNN(InitializableWithPhaseSeperationLayer):
         self._optimizer    = None
         self._optimizer_yt = None
 
+        self.state = {
+            XT_TILDA_ACTIVATION : {},
+            YT_ACTIVATION       : {},
+            TANH_ACTIVATION     : {},
+            SIGMOID_ACTIVATION  : {}
+        }
+
     def forward(self, input_tensor):
         self.input_tensor = input_tensor
         self.batch_size   = input_tensor.shape[0]
 
         self.hts = np.zeros((self.batch_size, self.hidden_size))
         self.yts = np.empty((self.batch_size, self.output_size))
-
-        self.xt_tilda_activation_store = list()
-        self.yt_activation_store = list()
-        self.tanh_activation_store    = list()
-        self.sigmoid_activation_store = list()
 
         if self.memorize == False:
             self.previous_ht = np.zeros(self.hidden_size)
@@ -48,24 +55,24 @@ class RNN(InitializableWithPhaseSeperationLayer):
             xt_tilda = self.fc_xt.forward(xt_tilda)
 
             xt_tilda_activation = self.fc_xt.input_tensor.copy()
-            self.xt_tilda_activation_store.append(xt_tilda_activation)
+            self.state[XT_TILDA_ACTIVATION][t] = xt_tilda_activation
 
             activated_xt_tilda = self.tanh_layer.forward(xt_tilda)
 
-            tanh_activation = self.tanh_layer.activation.copy()
-            self.tanh_activation_store.append(tanh_activation)
+            tanh_activation = self.tanh_layer.activation.copy()  
+            self.state[TANH_ACTIVATION][t] = tanh_activation
 
             self.previous_ht = activated_xt_tilda.copy()
 
             yt = self.fc_yt.forward(activated_xt_tilda)
             
             yt_activation = self.fc_yt.input_tensor.copy()
-            self.yt_activation_store.append(yt_activation)
+            self.state[YT_ACTIVATION][t] = yt_activation
 
             activated_yt = self.sigmoid_layer.forward(yt)
 
             sigmoid_activation = self.sigmoid_layer.activation.copy()
-            self.sigmoid_activation_store.append(sigmoid_activation)
+            self.state[SIGMOID_ACTIVATION][t] = sigmoid_activation
 
             self.hts[t] = self.previous_ht
             self.yts[t] = activated_yt
@@ -86,22 +93,22 @@ class RNN(InitializableWithPhaseSeperationLayer):
         for t in reversed(range(self.batch_size)):
             yt_error = error_tensor[t,]
 
-            self.sigmoid_layer.activation = self.sigmoid_activation_store[t]
+            self.sigmoid_layer.activation = self.state[SIGMOID_ACTIVATION][t]
             d_yt = self.sigmoid_layer.backward(yt_error)
             
-            self.fc_yt.input_tensor = self.yt_activation_store[t]
+            self.fc_yt.input_tensor = self.state[YT_ACTIVATION][t]
             d_yt = self.fc_yt.backward(d_yt.reshape(1, -1)) 
             
             yt_grad += self.fc_yt.gradient_weights
             delta_ht = d_yt + next_ht # Gradient of a copy procedure is a sum
 
-            self.tanh_layer.activation = self.tanh_activation_store[t]
+            self.tanh_layer.activation = self.state[TANH_ACTIVATION][t]
             tanh_grad = self.tanh_layer.backward(delta_ht) 
 
-            self.fc_xt.input_tensor = self.xt_tilda_activation_store[t] 
+            self.fc_xt.input_tensor = self.state[XT_TILDA_ACTIVATION][t] 
             error_grad = self.fc_xt.backward(tanh_grad)
 
-            xt_tilda_activation = self.xt_tilda_activation_store[t].copy()
+            xt_tilda_activation = self.state[XT_TILDA_ACTIVATION][t].copy()
             whh_grad += np.dot(xt_tilda_activation.T, tanh_grad)
 
             next_ht     = error_grad[:, 0:self.hidden_size]
