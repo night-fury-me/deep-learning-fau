@@ -6,9 +6,9 @@ from Layers.TanH import TanH
 from Layers.Sigmoid import Sigmoid
 
 XT_TILDA_ACTIVATION = 'XT_TILDA_ACTIVATION'
-YT_ACTIVATION = 'YT_ACTIVATION'
-TANH_ACTIVATION = 'TANH_ACTIVATION'
-SIGMOID_ACTIVATION = 'SIGMOID_ACTIVATION'
+YT_ACTIVATION       = 'YT_ACTIVATION'
+TANH_ACTIVATION     = 'TANH_ACTIVATION'
+SIGMOID_ACTIVATION  = 'SIGMOID_ACTIVATION'
 
 class RNN(InitializableWithPhaseSeperationLayer):
     def __init__(self, input_size, hidden_size, output_size):
@@ -83,12 +83,12 @@ class RNN(InitializableWithPhaseSeperationLayer):
         
         out_grad = np.zeros(self.input_tensor.shape)
 
-        xt_grad = np.zeros((self.fc_xt.weights.shape))
-        yt_grad = np.zeros((self.fc_yt.weights.shape))
+        xt_grad  = np.zeros((self.fc_xt.weights.shape))
+        yt_grad  = np.zeros((self.fc_yt.weights.shape))
         whh_grad = np.zeros((self.fc_xt.weights.shape))
         wxh_grad = np.zeros((self.fc_xt.weights.shape))
 
-        next_ht = 0 
+        next_ht  = 0 
 
         for t in reversed(range(self.batch_size)):
             yt_error = error_tensor[t,]

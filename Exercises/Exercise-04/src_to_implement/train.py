@@ -11,9 +11,9 @@ from model      import ResNet
 from sklearn.model_selection import train_test_split
 
 
-hostname = socket.gethostname()
+environment_type = os.getenv('ENVIRONMENT_TYPE')
 
-ROOT = '/home/jovyan/work/' if hostname == '7efc412e2797' else './'
+ROOT = '/home/jovyan/work/exercise4_material/src_to_implement/' if environment_type == 'cuda-env' else './'
 
 def get_dataloader(dataset_path):
     dataset = pd.read_csv(dataset_path, sep=';')

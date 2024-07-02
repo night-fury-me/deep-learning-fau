@@ -7,9 +7,9 @@ from sklearn.metrics import f1_score
 from tqdm.autonotebook import tqdm # type: ignore
 
 
-hostname = socket.gethostname()
+environment_type = os.getenv('ENVIRONMENT_TYPE')
 
-ROOT = '/home/jovyan/work/' if hostname == '7efc412e2797' else './'
+ROOT = '/home/jovyan/work/exercise4_material/src_to_implement/' if environment_type == 'cuda-env' else './'
 
 class Trainer:
     def __init__(self,
